@@ -21,7 +21,7 @@ app.use(helmet())
 app.use(cookieParser())
 
 const corsOptions = {
-    origin: ['http://localhost:5173']
+    origin: ['http://localhost:5173', 'https://samajeste.onrender.com']
 }
 
 app.use(cors(corsOptions))
