@@ -1,6 +1,6 @@
 const Event = require('../models/Events');
 const catchAsync = require('../utils/catchAsync');
-const uploadFromUrl = require('../utils/uploadFromURL');
+const uploadFromUrl = require('../utils/uploadFromUrl');
 const cloudinary = require('../utils/cloudinaryConfig');
 
 exports.createEvent = catchAsync(async (req, res) => {

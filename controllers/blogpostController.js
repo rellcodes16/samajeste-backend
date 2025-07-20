@@ -1,5 +1,5 @@
 const Blog = require('../models/Blog');
-const uploadFromUrl = require('../utils/uploadFromURL');
+const uploadFromUrl = require('../utils/uploadFromUrl');
 const { v4: uuidv4 } = require('uuid');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/apiError');

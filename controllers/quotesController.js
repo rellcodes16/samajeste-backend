@@ -1,6 +1,6 @@
 const Quote = require('../models/Quotes');
 const catchAsync = require('../utils/catchAsync');
-const uploadFromUrl = require('../utils/uploadFromURL');
+const uploadFromUrl = require('../utils/uploadFromUrl');
 
 exports.createQuote = catchAsync(async (req, res) => {
   const { name, occupation, quote, photo } = req.body;
