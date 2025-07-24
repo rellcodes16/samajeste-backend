@@ -5,6 +5,10 @@ const blogPostSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  lead: {
+    type: String,
+    required: true
+  },
   thumbnail: {
     type: String,
     required: true
