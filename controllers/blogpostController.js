@@ -6,7 +6,7 @@ const AppError = require('../utils/apiError');
 const sanitizeHtml = require('sanitize-html');
 
 exports.createBlogPost = catchAsync(async (req, res, next) => {
-  const { title, thumbnail, tags, author } = req.body;
+  const { title, thumbnail, tags, author, lead } = req.body;
 
   if (!title || !thumbnail || !author) {
     return next(new AppError('Title, thumbnail, and author are required', 400));
@@ -21,6 +21,7 @@ exports.createBlogPost = catchAsync(async (req, res, next) => {
 
   const newPost = await Blog.create({
     title,
+    lead,
     slug,
     thumbnail: thumbnailUrl,
     tags,
