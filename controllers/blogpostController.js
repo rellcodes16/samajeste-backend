@@ -5,57 +5,31 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/apiError');
 const sanitizeHtml = require('sanitize-html');
 
-const sanitizeConfig = {
-  allowedTags: ['p', 'img', 'b', 'i', 'strong', 'em', 'ul', 'li', 'ol', 'h1', 'h2', 'h3', 'a'],
-  allowedAttributes: {
-    'img': ['src', 'alt'],
-    'a': ['href', 'target'],
-  },
-};
-
 exports.createBlogPost = catchAsync(async (req, res, next) => {
-  const { title, thumbnail, content, tags, author } = req.body;
+  const { title, thumbnail, tags, author } = req.body;
 
-  if (!title || !thumbnail || !content || !author) {
-    return next(new AppError('Title, thumbnail, content, and author are required', 400));
+  if (!title || !thumbnail || !author) {
+    return next(new AppError('Title, thumbnail, and author are required', 400));
   }
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
 
-  const publicId = title
-    .replace(/[^a-zA-Z0-9 ]/g, '')
-    .trim()
-    .replace(/\s+/g, '_') + '_thumbnail';
-
+  const publicId = slug + '_thumbnail';
   const thumbnailUrl = await uploadFromUrl(thumbnail, publicId);
-
-  let updatedContent = content;
-  const imageUrlRegex = /<img[^>]+src="([^">]+)"/g;
-  const uploadedImageMap = {};
-
-  let match;
-  while ((match = imageUrlRegex.exec(content)) !== null) {
-    const imageUrl = match[1];
-    if (!uploadedImageMap[imageUrl]) {
-      const newUrl = await uploadFromUrl(imageUrl, uuidv4());
-      uploadedImageMap[imageUrl] = newUrl;
-    }
-  }
-
-  Object.entries(uploadedImageMap).forEach(([originalUrl, newUrl]) => {
-    updatedContent = updatedContent.replace(new RegExp(originalUrl, 'g'), newUrl);
-  });
-
-  const sanitizedContent = sanitizeHtml(updatedContent, sanitizeConfig);
 
   const newPost = await Blog.create({
     title,
+    slug,
     thumbnail: thumbnailUrl,
-    content: sanitizedContent,
     tags,
     author,
   });
 
   res.status(201).json({ status: 'success', data: newPost });
 });
+
 
 exports.updateBlogPost = catchAsync(async (req, res, next) => {
   const { id } = req.params;

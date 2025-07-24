@@ -5,16 +5,8 @@ const blogPostSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  lead: {
-    type: String,
-    required: true
-  },
   thumbnail: {
     type: String,
-    required: true
-  },
-  content: {
-    type: mongoose.Schema.Types.Mixed,
     required: true
   },
   tags: [String],
