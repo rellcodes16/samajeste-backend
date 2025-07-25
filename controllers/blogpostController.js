@@ -130,6 +130,25 @@ exports.getBlogPostBySlug = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRelatedBlogs = catchAsync(async (req, res, next) => {
+  const { tags, exclude } = req.query;
+
+  if (!tags) {
+    return next(new AppError('Tags are required to find related blogs', 400));
+  }
+
+  const tagArray = tags.split(',').map(tag => tag.trim().toLowerCase());
+
+  const relatedBlogs = await Blog.find({
+    _id: { $ne: exclude },
+    tags: { $in: tagArray },
+  })
+    .limit(7)
+    .sort({ createdAt: -1 });
+
+  res.status(200).json(relatedBlogs);
+});
+
 exports.deleteBlogPost = catchAsync(async (req, res, next) => {
   const blog = await Blog.findByIdAndDelete(req.params.id);
   if (!blog) return next(new AppError('Blog post not found', 404));

@@ -3,6 +3,8 @@ const blogController = require('../controllers/blogpostController');
 
 const router = express.Router();
 
+router.get("/related", blogController.getRelatedBlogs);
+
 router
   .route('/')
   .post(blogController.createBlogPost)
