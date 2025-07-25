@@ -9,6 +9,9 @@ const blogPostSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  slug: {
+    type: String,
+  },
   thumbnail: {
     type: String,
     required: true

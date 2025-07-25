@@ -14,4 +14,6 @@ router
   .patch(blogController.updateBlogPost)
   .delete(blogController.deleteBlogPost);
 
+router.get("/slug/:slug", blogController.getBlogPostBySlug);
+
 module.exports = router;

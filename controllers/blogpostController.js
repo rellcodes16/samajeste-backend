@@ -114,6 +114,22 @@ exports.getBlogPost = catchAsync(async (req, res, next) => {
   res.status(200).json({ status: 'success', data: blog });
 });
 
+
+exports.getBlogPostBySlug = catchAsync(async (req, res, next) => {
+  const { slug } = req.params;
+
+  const blog = await Blog.findOne({ slug });
+
+  if (!blog) {
+    return next(new AppError("No blog found with that slug", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: blog,
+  });
+});
+
 exports.deleteBlogPost = catchAsync(async (req, res, next) => {
   const blog = await Blog.findByIdAndDelete(req.params.id);
   if (!blog) return next(new AppError('Blog post not found', 404));
