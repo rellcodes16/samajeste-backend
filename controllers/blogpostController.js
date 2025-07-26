@@ -146,7 +146,11 @@ exports.getRelatedBlogs = catchAsync(async (req, res, next) => {
     .limit(7)
     .sort({ createdAt: -1 });
 
-  res.status(200).json(relatedBlogs);
+  res.status(200).json({
+    status: 'success',
+    data: relatedBlogs,
+  });
+
 });
 
 exports.deleteBlogPost = catchAsync(async (req, res, next) => {
