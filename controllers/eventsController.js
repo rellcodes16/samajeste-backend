@@ -4,7 +4,7 @@ const uploadFromUrl = require('../utils/uploadFromUrl');
 const cloudinary = require('../utils/cloudinaryConfig');
 
 exports.createEvent = catchAsync(async (req, res) => {
-  const { name, description, venue, registerURL, thumbnail, date } = req.body;
+  const { name, description, venue, registerURL, thumbnail, date, startTime, endTime } = req.body;
 
   if (!thumbnail) {
     return res.status(400).json({
@@ -39,6 +39,8 @@ exports.createEvent = catchAsync(async (req, res) => {
     registerURL,
     thumbnail: uploadedThumbnailUrl,
     date,
+    startTime,
+    endTime
   });
 
   res.status(201).json({
