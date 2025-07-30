@@ -6,14 +6,23 @@ const authorSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    description: {
+    about: {
         type: String,
         required: true
     },
     mediaURL: {
-        type: String,
-        required: true,
+        type: [String],
     },
 });
+
+authorSchema.virtual("blogs", {
+  ref: "Blog",
+  localField: "_id",
+  foreignField: "author",
+  justOne: false,
+});
+authorSchema.set("toObject", { virtuals: true });
+authorSchema.set("toJSON", { virtuals: true });
+
 
 module.exports = mongoose.model("Author", authorSchema);

@@ -13,6 +13,7 @@ const favicon = require('serve-favicon')
 const quotesRouter = require('./routes/quotesRoute');
 const eventsRouter = require('./routes/eventsRoute');
 const blogsRouter = require('./routes/blogsRoute');
+const authorRouter = require('./routes/authorRoute');
 
 const app = express()
 
@@ -70,5 +71,6 @@ app.get('/api/v1/test', (req, res) => {
 app.use('/api/samajeste/quotes', quotesRouter)
 app.use('/api/samajeste/events', eventsRouter)
 app.use('/api/samajeste/blogs', blogsRouter)
+app.use('/api/samajeste/author', authorRouter)
 
 module.exports = app;
