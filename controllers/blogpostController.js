@@ -94,7 +94,8 @@ exports.getAllBlogPosts = catchAsync(async (req, res, next) => {
   const blogs = await Blog.find(query)
     .sort({ createdAt: -1 })
     .skip(skip)
-    .limit(Number(limit));
+    .limit(Number(limit))
+    .populate("author");
 
   const total = await Blog.countDocuments(query);
 
@@ -108,7 +109,7 @@ exports.getAllBlogPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.getBlogPost = catchAsync(async (req, res, next) => {
-  const blog = await Blog.findById(req.params.id);
+  const blog = await Blog.findById(req.params.id).populate("author");
   if (!blog) return next(new AppError('Blog post not found', 404));
 
   res.status(200).json({ status: 'success', data: blog });
@@ -118,7 +119,7 @@ exports.getBlogPost = catchAsync(async (req, res, next) => {
 exports.getBlogPostBySlug = catchAsync(async (req, res, next) => {
   const { slug } = req.params;
 
-  const blog = await Blog.findOne({ slug });
+  const blog = await Blog.findOne({ slug }).populate("author");
 
   if (!blog) {
     return next(new AppError("No blog found with that slug", 404));
