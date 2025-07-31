@@ -13,6 +13,9 @@ const authorSchema = new mongoose.Schema({
     mediaURL: {
         type: [String],
     },
+    pfp: {
+        type: String,
+    }
 });
 
 authorSchema.virtual("blogs", {

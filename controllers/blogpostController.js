@@ -34,47 +34,37 @@ exports.createBlogPost = catchAsync(async (req, res, next) => {
 
 exports.updateBlogPost = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const { title, thumbnail, content, tags } = req.body;
+  const { title, thumbnail, tags, author, lead } = req.body;
 
   const blog = await Blog.findById(id);
   if (!blog) return next(new AppError('Blog post not found', 404));
 
+  if (title && title !== blog.title) {
+    blog.title = title;
+    blog.slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+  }
+
   if (thumbnail && thumbnail !== blog.thumbnail) {
-    const publicId = title
-      .replace(/[^a-zA-Z0-9 ]/g, '')
-      .trim()
-      .replace(/\s+/g, '_') + '_thumbnail';
+    const publicId = blog.slug + '_thumbnail';
     blog.thumbnail = await uploadFromUrl(thumbnail, publicId);
   }
 
-  if (content) {
-    let updatedContent = content;
-    const imageUrlRegex = /<img[^>]+src="([^">]+)"/g;
-    const uploadedImageMap = {};
-
-    let match;
-    while ((match = imageUrlRegex.exec(content)) !== null) {
-      const imageUrl = match[1];
-      if (!uploadedImageMap[imageUrl]) {
-        const newUrl = await uploadFromUrl(imageUrl, uuidv4());
-        uploadedImageMap[imageUrl] = newUrl;
-      }
-    }
-
-    Object.entries(uploadedImageMap).forEach(([originalUrl, newUrl]) => {
-      updatedContent = updatedContent.replace(new RegExp(originalUrl, 'g'), newUrl);
-    });
-
-    blog.content = sanitizeHtml(updatedContent, sanitizeConfig);
+  if (lead !== undefined) {
+    blog.lead = lead;
   }
 
-  if (title) blog.title = title;
   if (tags) blog.tags = tags;
+
+  if (author) blog.author = author;
 
   await blog.save();
 
   res.status(200).json({ status: 'success', data: blog });
 });
+
 
 exports.getAllBlogPosts = catchAsync(async (req, res, next) => {
   const { page = 1, limit = 10, search = '' } = req.query;

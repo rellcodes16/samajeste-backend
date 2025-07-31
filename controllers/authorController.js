@@ -2,7 +2,8 @@ const Author = require("../models/Author");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/apiError");
 const Blog = require("../models/Blog");
-
+const { uploadFromUrl } = require('../utils/uploadFromUrl');
+const cloudinary = require('cloudinary')
 
 exports.createAuthor = catchAsync(async (req, res, next) => {
   const { name, about, mediaURL } = req.body;
@@ -11,13 +12,65 @@ exports.createAuthor = catchAsync(async (req, res, next) => {
     throw new ApiError(400, "Name, about, and an array of media URLs are required");
   }
 
-  const author = await Author.create({ name, about, mediaURL });
+  let pfp;
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "authors",
+    });
+    pfp = result.secure_url;
+  }
+
+  const author = await Author.create({
+    name,
+    about,
+    mediaURL,
+    pfp,
+  });
 
   res.status(201).json({
     status: "success",
     data: author,
   });
 });
+
+
+exports.updateAuthor = catchAsync(async (req, res, next) => {
+  const { authorId } = req.params;
+  const updates = req.body;
+
+  const raw = req.body.mediaURL;
+  if (raw !== undefined) {
+    if (typeof raw === 'string') {
+      updates.mediaURL = [raw];
+    } else if (Array.isArray(raw)) {
+      updates.mediaURL = raw;
+    } else {
+      throw new ApiError(400, 'mediaURL must be an array or a string');
+    }
+  }
+
+  const author = await Author.findById(authorId);
+  if (!author) throw new ApiError(404, 'Author not found');
+
+  if (req.file) {
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: 'authors',
+    });
+    updates.pfp = result.secure_url;
+  }
+
+  const updatedAuthor = await Author.findByIdAndUpdate(authorId, updates, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: updatedAuthor,
+  });
+});
+
+
 
 exports.getAuthorById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
