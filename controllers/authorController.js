@@ -1,6 +1,7 @@
 const Author = require("../models/Author");
 const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/apiError");
+const Blog = require("../models/Blog");
 
 
 exports.createAuthor = catchAsync(async (req, res, next) => {
@@ -40,5 +41,39 @@ exports.getAllAuthors = catchAsync(async (req, res, next) => {
     status: "success",
     results: authors.length,
     data: authors,
+  });
+});
+
+exports.getBlogsByAuthor = catchAsync(async (req, res, next) => {
+  const { authorId } = req.params;
+  const { page = 1, limit = 10, search = '' } = req.query;
+
+  const query = {
+    author: authorId,
+    ...(search && {
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } },
+      ],
+    }),
+  };
+
+  const skip = (page - 1) * limit;
+
+  const blogs = await Blog.find(query)
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(Number(limit))
+    .populate("author");
+
+  const total = await Blog.countDocuments(query);
+
+  res.status(200).json({
+    status: 'success',
+    total,
+    currentPage: Number(page),
+    totalPages: Math.ceil(total / limit),
+    data: blogs,
   });
 });
