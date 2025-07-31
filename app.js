@@ -14,6 +14,7 @@ const quotesRouter = require('./routes/quotesRoute');
 const eventsRouter = require('./routes/eventsRoute');
 const blogsRouter = require('./routes/blogsRoute');
 const authorRouter = require('./routes/authorRoute');
+const newsRouter = require('./routes/newsRoute');
 
 const app = express()
 
@@ -72,5 +73,6 @@ app.use('/api/samajeste/quotes', quotesRouter)
 app.use('/api/samajeste/events', eventsRouter)
 app.use('/api/samajeste/blogs', blogsRouter)
 app.use('/api/samajeste/author', authorRouter)
+app.use('/api/samajeste/news', newsRouter)
 
 module.exports = app;
