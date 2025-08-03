@@ -23,7 +23,7 @@ app.use(helmet())
 app.use(cookieParser())
 
 const corsOptions = {
-    origin: ['http://localhost:5173', 'https://samejeste.vercel.app', 'https://www.samajeste.org/', 'https://samajeste.onrender.com']
+    origin: ['http://localhost:5173', 'https://samejeste.vercel.app', 'https://www.samajeste.org', 'https://samajeste.onrender.com']
 }
 
 app.use(cors(corsOptions))
