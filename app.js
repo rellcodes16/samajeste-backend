@@ -22,11 +22,30 @@ app.use(helmet())
 
 app.use(cookieParser())
 
-const corsOptions = {
-    origin: ['http://localhost:5173', 'https://samejeste.vercel.app', 'https://www.samajeste.org', 'https://samajeste.onrender.com']
-}
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://samejeste.vercel.app',
+  'https://www.samajeste.org',
+  'https://samajeste.onrender.com'
+];
 
-app.use(cors(corsOptions))
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+};
+
+app.use(cors(corsOptions));
+
+app.options('*', cors(corsOptions));
+
 
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'))
