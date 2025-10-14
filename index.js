@@ -1,51 +1,15 @@
-const mongoose = require('mongoose')
-const dotenv  = require('dotenv')
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const app = require('./app');
 
-const path = require("path");
-require(path.join(__dirname));
+dotenv.config({ path: './.env' });
 
+const DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD);
 
-process.on('uncaughtException', err => {
-    console.log('UNHANDLED EXCEPTION: Shutting down...')
-    console.log(err.name, err.message)
-    process.exit(1)
-})
-
-dotenv.config({ path: './.env'})
-
-const app = require('./app')
-
-const DB = process.env.DATABASE.replace(
-    '<password>',
-    process.env.DATABASE_PASSWORD
-);
-
-
-if (!mongoose.connection.readyState) {
-  mongoose.connect(DB)
-    .then(() => console.log('DB connection successful'))
-    .catch(err => console.error('Error connecting to the database:', err));
+if (!global._mongooseConnection) {
+  global._mongooseConnection = mongoose.connect(DB)
+    .then(() => console.log('DB connected'))
+    .catch(err => console.error('DB connection error:', err));
 }
 
-console.log(DB)
-
-mongoose.connect(DB)
-.then(() => {
-    console.log('DB connection successful');
-})
-.catch((err) => {
-    console.error('Error connecting to the database:', err);
-});
-
-const port = process.env.PORT || 3000;
-// const server = app.listen(port, () => {
-//     console.log(`App running on port ${port}...`)
-// });
-
-process.on('unhandledRejection', err => {
-    console.log('UNHANDLED REJECTION: Shutting down...')
-    console.log(err.name, err.message)
-    server.close(() => {
-        process.exit(1)
-    })
-})
+module.exports = app;
