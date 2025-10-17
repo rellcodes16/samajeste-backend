@@ -24,27 +24,30 @@ app.use(cookieParser())
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://samejeste.vercel.app',
+  'https://samajeste.vercel.app',
   'https://www.samajeste.org',
-  'https://samajeste.onrender.com'
+  'https://samajeste.onrender.com',
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log('Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions)); 
 
 
 if(process.env.NODE_ENV === 'development'){
