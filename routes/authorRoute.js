@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const authorController = require("../controllers/authorController");
 const multer = require("multer");
-
-const upload = multer({ dest: "temp/" }); 
+const storage = require("../utils/cloudinaryStorage"); 
+const upload = multer({ storage });
 
 router.post('/', upload.single('pfp'), authorController.createAuthor);
 router.patch('/:authorId', upload.single('pfp'), authorController.updateAuthor);

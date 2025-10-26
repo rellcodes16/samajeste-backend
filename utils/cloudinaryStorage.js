@@ -1,9 +1,8 @@
-// utils/cloudinaryStorage.js
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('./cloudinaryConfig'); // ✅ import the configured instance
+const cloudinary = require('./cloudinaryConfig'); // 
 
 const storage = new CloudinaryStorage({
-  cloudinary, // this is now the correctly configured instance
+  cloudinary,
   params: {
     folder: 'quotes',
     allowed_formats: ['jpg', 'jpeg', 'png'],
