@@ -1,14 +1,16 @@
+// localServer.js
+const app = require('./app');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const path = require('path');
 
-dotenv.config({ path: './.env' });
-const app = require('./app');
+dotenv.config();
 
 const DB = process.env.DATABASE;
-
 mongoose.connect(DB)
-  .then(() => console.log('DB connection successful'))
-  .catch(err => console.error('Error connecting to the database:', err));
+  .then(() => console.log('DB connected'))
+  .catch((err) => console.error('DB connection error:', err));
 
-module.exports = app;
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
+});

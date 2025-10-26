@@ -4,11 +4,9 @@ const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
-const hpp = require('hpp')
 const path = require('path')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
-const favicon = require('serve-favicon')
 
 const quotesRouter = require('./routes/quotesRoute');
 const eventsRouter = require('./routes/eventsRoute');
