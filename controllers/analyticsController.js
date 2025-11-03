@@ -1,6 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const mongoose = require('mongoose');
-const Visit = require('../models/visitModel');
+const Visit = require('../models/Analytics');
 
 exports.recordVisit = async (req, res) => {
   try {
