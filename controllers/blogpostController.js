@@ -4,8 +4,11 @@ const { v4: uuidv4 } = require('uuid');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/apiError');
 const sanitizeHtml = require('sanitize-html');
+const connectDB = require('../utils/connectDB');
 
 exports.createBlogPost = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { title, thumbnail, tags, author, lead } = req.body;
 
   if (!title || !thumbnail || !author) {
@@ -33,6 +36,8 @@ exports.createBlogPost = catchAsync(async (req, res, next) => {
 
 
 exports.updateBlogPost = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { id } = req.params;
   const { title, thumbnail, tags, author, lead } = req.body;
 
@@ -67,6 +72,8 @@ exports.updateBlogPost = catchAsync(async (req, res, next) => {
 
 
 exports.getAllBlogPosts = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { page = 1, limit = 10, search = '' } = req.query;
 
   const query = search
@@ -99,6 +106,8 @@ exports.getAllBlogPosts = catchAsync(async (req, res, next) => {
 });
 
 exports.getBlogPost = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const blog = await Blog.findById(req.params.id).populate("author");
   if (!blog) return next(new AppError('Blog post not found', 404));
 
@@ -107,6 +116,8 @@ exports.getBlogPost = catchAsync(async (req, res, next) => {
 
 
 exports.getBlogPostBySlug = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { slug } = req.params;
 
   const blog = await Blog.findOne({ slug }).populate("author");
@@ -122,6 +133,8 @@ exports.getBlogPostBySlug = catchAsync(async (req, res, next) => {
 });
 
 exports.getRelatedBlogs = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { tags, exclude } = req.query;
 
   if (!tags) {
@@ -145,6 +158,8 @@ exports.getRelatedBlogs = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteBlogPost = catchAsync(async (req, res, next) => {
+  await connectDB()
+  
   const blog = await Blog.findByIdAndDelete(req.params.id);
   if (!blog) return next(new AppError('Blog post not found', 404));
 

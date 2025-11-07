@@ -2,6 +2,8 @@ const { v4: uuidv4 } = require('uuid');
 const Visit = require('../models/Analytics');
 
 exports.recordVisit = async (req, res) => {
+  await connectDB()
+
   try {
     const visitorId = req.cookies.visitor_id || uuidv4();
 
@@ -31,6 +33,8 @@ exports.recordVisit = async (req, res) => {
 
 
 exports.getStats = async (req, res) => {
+  await connectDB()
+  
   try {
     const total = await Visit.countDocuments();
     const unique = await Visit.distinct('visitorId');

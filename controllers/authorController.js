@@ -3,9 +3,12 @@ const catchAsync = require("../utils/catchAsync");
 const ApiError = require("../utils/apiError");
 const Blog = require("../models/Blog");
 const { uploadFromUrl } = require('../utils/uploadFromUrl');
-const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary');
+const connectDB = require("../utils/connectDB");
 
 exports.createAuthor = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { name, about, mediaURL } = req.body;
 
   if (!name || !about || !mediaURL || !Array.isArray(mediaURL)) {
@@ -33,8 +36,9 @@ exports.createAuthor = catchAsync(async (req, res, next) => {
   });
 });
 
-
 exports.updateAuthor = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { authorId } = req.params;
   const updates = req.body;
 
@@ -70,9 +74,9 @@ exports.updateAuthor = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
 exports.getAuthorById = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { id } = req.params;
 
   const author = await Author.findById(id).populate("blogs");
@@ -88,6 +92,8 @@ exports.getAuthorById = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllAuthors = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const authors = await Author.find();
 
   res.status(200).json({
@@ -98,6 +104,8 @@ exports.getAllAuthors = catchAsync(async (req, res, next) => {
 });
 
 exports.getBlogsByAuthor = catchAsync(async (req, res, next) => {
+  await connectDB()
+  
   const { authorId } = req.params;
   const { page = 1, limit = 10, search = '' } = req.query;
 

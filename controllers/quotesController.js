@@ -1,8 +1,12 @@
 const Quote = require('../models/Quotes');
 const catchAsync = require('../utils/catchAsync');
 const uploadFromUrl = require('../utils/uploadFromUrl');
+const cloudinary = require('../utils/cloudinaryConfig'); 
+const connectDB = require('../utils/connectDB'); 
 
 exports.createQuote = catchAsync(async (req, res) => {
+  await connectDB(); 
+
   const { name, occupation, quote, photo } = req.body;
 
   if (!photo) {
@@ -37,6 +41,8 @@ exports.createQuote = catchAsync(async (req, res) => {
 });
 
 exports.getAllQuotes = catchAsync(async (req, res) => {
+  await connectDB(); 
+
   const quotes = await Quote.find();
 
   res.status(200).json({
@@ -47,6 +53,8 @@ exports.getAllQuotes = catchAsync(async (req, res) => {
 });
 
 exports.deleteQuote = catchAsync(async (req, res) => {
+  await connectDB(); 
+
   const quote = await Quote.findById(req.params.id);
   
   if (!quote) {

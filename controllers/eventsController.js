@@ -2,8 +2,11 @@ const Event = require('../models/Events');
 const catchAsync = require('../utils/catchAsync');
 const uploadFromUrl = require('../utils/uploadFromUrl');
 const cloudinary = require('../utils/cloudinaryConfig');
+const connectDB = require('../utils/connectDB');
 
 exports.createEvent = catchAsync(async (req, res) => {
+  await connectDB()
+
   const { name, description, venue, registerURL, thumbnail, date, startTime, endTime } = req.body;
 
   if (!thumbnail) {
@@ -50,6 +53,8 @@ exports.createEvent = catchAsync(async (req, res) => {
 });
 
 exports.getAllEvents = catchAsync(async (req, res) => {
+  await connectDB()
+
   const events = await Event.find().sort({ date: 1 });
 
   res.status(200).json({
@@ -60,6 +65,8 @@ exports.getAllEvents = catchAsync(async (req, res) => {
 });
 
 exports.getEvent = catchAsync(async (req, res) => {
+  await connectDB()
+
   const event = await Event.findById(req.params.id);
 
   if (!event) {
@@ -76,6 +83,8 @@ exports.getEvent = catchAsync(async (req, res) => {
 });
 
 exports.deleteEvent = catchAsync(async (req, res) => {
+  await connectDB()
+  
   const event = await Event.findById(req.params.id);
 
   if (!event) {

@@ -1,8 +1,11 @@
 const News = require('../models/News');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/apiError');
+const connectDB = require('../utils/connectDB');
 
 exports.createNews = catchAsync(async (req, res, next) => {
+  await connectDB()
+
   const { title, lead, thumbnail, URL } = req.body;
 
   if (!title || !thumbnail || !URL) {
@@ -18,6 +21,8 @@ exports.createNews = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllNews = catchAsync(async (req, res, next) => {
+  await connectDB()
+  
   const newsList = await News.find().sort({ createdAt: -1 });
 
   res.status(200).json({
